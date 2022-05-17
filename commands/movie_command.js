@@ -75,7 +75,7 @@ async function start(argv) {
     steps.push(Promise.resolve());
   }
 
-  if ( argv.metadata || args.screens ) {
+  if ( argv.metadata || argv.screens ) {
     const p_ffmpeg = FFMpeg.exec(argv.fork,{
       CONFIG: Config,
       args: argv,

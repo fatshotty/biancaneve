@@ -1,33 +1,34 @@
 const { isMainThread } = require('worker_threads');
-
-const {MDBList} = require('mdblist-lib');
 const TMDB = require('tmdb').Tmdb;
 const {cleanString, exec_thread} = require('../utils');
 const FS = require('fs');
 const Path = require('path');
 const Got = require('got');
 const Logger = require('../logger');
+const {MDBList} = require('mdblist-lib');
 
 const Log = new Logger('scraper');
 
 async function start({CONFIG, args, data}) {
 
-  const MDB = new MDBList( CONFIG.MdbListKey );
   const TmdbCli = new TMDB( CONFIG.TmdbKey, 'it' );
+  const MDB = new MDBList( CONFIG.MdbListKey);
 
   Log.info('scraping', data.title, data.year);
 
-  const searchResponse = await MDB.search(data.title, data.year, 'movie');
-  const searchItems = searchResponse.search;
+  const searchResponse = await TmdbCli.get(`search/movie`, {query: data.title, language: TmdbCli.language});
+
+  const searchItems = searchResponse.results;
+
   const movieCleanTitle = cleanString( data.title );
 
-  Log.info('found', searchItems.length, 'results on MDB:', movieCleanTitle);
+  Log.info('found', searchItems.length, 'results on TMDB:', movieCleanTitle);
 
   async function scrapeOnTmdb() {
 
     for await ( let searchItem of searchItems ) {
 
-      let tmdbid = searchItem.tmdbid;
+      let tmdbid = searchItem.id;
       Log.info(`scraping '${searchItem.title}' (${searchItem.year}) [${tmdbid}] on tmdb`);
 
       try {
