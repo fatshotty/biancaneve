@@ -40,7 +40,6 @@ async function start(argv) {
 
   const filename = `${foldername}${Path.extname(FILE)}`;
   const tempMovieFullPath = Path.join(tempMovieFolder, filename);
-  Log.debug('file will be downloaded in', tempMovieFullPath);
 
   const filenameInLit = stringToLIT(`${metadata.title} ${metadata.year}`);
   Log.debug('filename transformed is', filenameInLit);
@@ -127,9 +126,9 @@ async function start(argv) {
         });
       })
     }
-    steps.push(p_rar);
-  } else {
-    steps.push(Promise.resolve());
+    // steps.push(p_rar);
+  // } else {
+    // steps.push(Promise.resolve());
   }
 
 
@@ -140,7 +139,7 @@ async function start(argv) {
     const pugdata = {
       scraper: resp[1],
       ffmpeg: resp[2],
-      rar: resp[3],
+      // rar: resp[3],
       images: {urls: {}}
     };
 
