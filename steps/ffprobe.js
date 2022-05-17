@@ -40,7 +40,9 @@ async function extractVideoData(file) {
       if ( code > 0 ) {
         reject();
       } else {
-        return resolve(outputData.join('\n'));
+        const report = outpuData.join('\n');
+        Log.debug(report)
+        return resolve(report);
       }
     });
   });
