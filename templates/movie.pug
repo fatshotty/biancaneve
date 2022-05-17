@@ -1,0 +1,54 @@
+div(data-empty='true' style='text-align: center;')
+  img.fr-fic.fr-dib(src=images.urls.poster style='width: 360px;')
+br
+br
+div(data-empty='true' style='text-align: center;')
+  img.fr-fic.fr-dib(src='https://i.imgur.com/wSisper.png')
+div(data-empty='true' style='text-align: center;')
+  b Titolo originale:
+  |  #{scraper.tmdb.originalTitle}
+  br
+  b Nazione:
+  |  #{scraper.tmdb.productionCountries.map( i=> i.name).join(', ')}
+  br
+  b Anno:
+  |  #{scraper.mdb.year}
+  br
+  b Genere:
+  |  #{scraper.tmdb.genres.map(g => g.name).join(', ')}
+  br
+  b Durata:
+  |  #{Number(scraper.tmdb.runtime / 60).toFixed(2)} ore
+  br
+  b Regia:
+  |  #{scraper.tmdb.credits.crew.filter(c => c.job == 'Director').map(c => c.name).join(', ')}
+  br
+  b Cast:
+  |  #{scraper.tmdb.credits.cast.sort((a, b) => (a.popularity > b.popularity ? -1 : 1)).slice(0, 4).map(c => c.name).join(', ')}
+div(data-empty='true' style='text-align: center;')
+  br
+br
+div(data-empty='true' style='text-align: center;')
+  img.fr-fic.fr-dib(src='https://i.imgur.com/U2WrW4o.png')
+  | #{scraper.tmdb.overview}
+br
+br
+img.fr-fic.fr-dib(src='https://i.imgur.com/iYnpAu8.png')
+br
+br
+| [spoiler]
+- if ( video.ffmpeg ) {
+| #{video.ffmpeg.video}
+- }
+|[/spoiler]
+
+br
+br
+br
+br
+img.fr-fic.fr-dib(src='https://i.imgur.com/BTK5FVW.png')
+div(data-empty='true' style='text-align: center;')
+  img.fr-fic.fr-dib(src='http://i.imgur.com/ONPJpNk.gif')
+br
+br
+| [hide]qui i link EB[/hide]

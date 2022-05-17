@@ -1,0 +1,24 @@
+{
+  "name": "redprimrose_eb",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "fatshotty",
+  "license": "ISC",
+  "dependencies": {
+    "dayjs": "^1.11.1",
+    "dotenv": "^16.0.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "ftp": "^0.3.10",
+    "glob": "^8.0.1",
+    "got": "~11.8.2",
+    "mdblist-lib": "^1.0.0",
+    "pixhost": "^0.1.0",
+    "pug": "^3.0.2",
+    "tmdb": "^2.6.0",
+    "yargs": "^17.4.1"
+  }
+}
