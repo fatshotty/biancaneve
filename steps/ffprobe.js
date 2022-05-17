@@ -40,7 +40,7 @@ async function extractVideoData(file) {
       if ( code > 0 ) {
         reject();
       } else {
-        const report = outpuData.join('\n');
+        const report = outputData.join('\n');
         Log.debug(report)
         return resolve(report);
       }
