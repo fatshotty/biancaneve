@@ -50,10 +50,6 @@ async function start(argv) {
   }
 
 
-  // do not extract screens for movie file
-  argv.screens = false;
-
-
   const steps = [Promise.resolve()];
 
   if ( argv.scraper ) {
