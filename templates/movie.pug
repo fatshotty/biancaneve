@@ -37,9 +37,14 @@ img.fr-fic.fr-dib(src='https://i.imgur.com/iYnpAu8.png')
 br
 br
 | [spoiler]
+br
 - if ( ffmpeg && ffmpeg.video ) {
-| #{ffmpeg.video.split('\n').join('<br />')}
+  - for (str of ffmpeg.video) {
+    span= str
+    br
+  - }
 - }
+br
 |[/spoiler]
 
 br
