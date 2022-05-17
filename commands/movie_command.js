@@ -169,7 +169,7 @@ async function start(argv) {
       pugdata.images = uploadedImages;
     }
 
-    let p_pug = Pug.exec(argv.fork,{
+    let p_pug = Pug.exec(false,{
       CONFIG: Config,
       args: argv,
       data: {
