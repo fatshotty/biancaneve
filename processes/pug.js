@@ -11,7 +11,12 @@ async function start({CONFIG, args, data}) {
 
   const destination = Path.resolve(data.folder, `${data.fileLit}-post.html`);
 
+  Log.info('template will be:', destination);
+
   const str = Pug.renderFile( Path.resolve(__dirname, '../templates/movie.pug'), data);
+
+  Log.debug('template to be generated:', str.substring(0, 100))
+
   FS.writeFileSync( destination, str, 'utf-8');
 
   return true;

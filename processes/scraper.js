@@ -29,7 +29,7 @@ async function start({CONFIG, args, data}) {
     for await ( let searchItem of searchItems ) {
 
       let tmdbid = searchItem.id;
-      Log.info(`scraping '${searchItem.title}' (${searchItem.year}) [${tmdbid}] on tmdb`);
+      Log.info(`scraping '${searchItem.title}' (${searchItem.releaseDate}) [${tmdbid}] on tmdb`);
 
       try {
         // const res = await TmdbCli.getMovie(tmdbid);
