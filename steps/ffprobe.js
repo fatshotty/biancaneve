@@ -19,10 +19,10 @@ async function extractVideoData(file) {
     Log.info('analyzing video file...');
   }, 5000);
 
-  const outputData = [];
+  let outputData = [];
 
   proc.stdout.on("data", data => {
-    outputData.push( data.toString() );
+    outputData = data.toString().split('\n');
   });
 
   proc.stderr.on("data", data => {
@@ -43,7 +43,7 @@ async function extractVideoData(file) {
         outputData.shift();
         const report = outputData.join('\n');
         Log.debug(report)
-        return resolve(outputData.filter(Boolean));
+        return resolve(outputData);
       }
     });
   });
