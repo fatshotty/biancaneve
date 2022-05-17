@@ -153,11 +153,11 @@ async function start(argv) {
       images.push( pugdata.ffmpeg.screens.map( (s, i) => ({'name': `screenshot_${(i + 1)}`, path: Path.join(tempMovieFolder, i)} ) ) );
     }
 
-    if ( pugdata.scraper && pugdata.scraper.tmdb.posterPath ) {
+    if ( pugdata.scraper && pugdata.scraper.tmdb && pugdata.scraper.tmdb.posterPath ) {
       images.push( {name: 'poster', path: Path.join(tempMovieFolder, pugdata.scraper.tmdb.posterPath) } );
     }
 
-    if ( pugdata.scraper && pugdata.scraper.tmdb.backdropPath ) {
+    if ( pugdata.scraper && pugdata.scraper.tmdb && pugdata.scraper.tmdb.backdropPath ) {
       images.push( {name:'backdrop', path: Path.join(tempMovieFolder, pugdata.scraper.tmdb.backdropPath) });
     }
 
@@ -183,7 +183,7 @@ async function start(argv) {
       }
     });
 
-    p_pug.then( () => {
+    p_pug.finally( () => {
       // console.log('');
       // console.log( JSON.stringify({
       //   scraper: pugdata.scraper,

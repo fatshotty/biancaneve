@@ -21,12 +21,14 @@ async function start({CONFIG, args, data}) {
   const searchItems = searchResponse.search;
   const movieCleanTitle = cleanString( data.title );
 
+  Log.info('found', searchItems.length, 'results on MDB:', movieCleanTitle);
 
   async function scrapeOnTmdb() {
 
     for await ( let searchItem of searchItems ) {
 
       let tmdbid = searchItem.tmdbid;
+      Log.info(`scraping '${searchItem.title}' (${searchItem.year}) [${tmdbid}] on tmdb`);
 
       try {
         // const res = await TmdbCli.getMovie(tmdbid);
@@ -46,6 +48,8 @@ async function start({CONFIG, args, data}) {
           let mdbMovieData = await MDB.byTmdbID(tmdbid);
 
           return {tmdb: res, mdb: mdbMovieData};
+        } else {
+          Log.warn(`no title/year match on tmdb '${cleanTitle}', '${cleanOriginalTitle}', (${movieYear})`);
         }
 
       } catch (e) {

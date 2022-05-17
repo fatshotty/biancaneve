@@ -16,7 +16,7 @@ async function extractVideoData(file) {
   const proc = ChildProcess.spawn("avinaptic2-cli", ['--drf', file]);
 
   let timer = setInterval(() => {
-    Log.info('analyzing vvideo file...');
+    Log.info('analyzing video file...');
   }, 5000);
 
   const outputData = [];
