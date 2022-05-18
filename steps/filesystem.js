@@ -56,8 +56,7 @@ async function extractTitleYearS(folder) {
 }
 
 
-async function execRar(sourceFile, filename, password) {
-  // rar a -v250000k /path/TITOLO.rar /path/TITOLO.mkv
+async function execRar(sourceFile, filename, password, size) {
   const folder = Path.dirname(sourceFile);
 
 
@@ -71,7 +70,8 @@ async function execRar(sourceFile, filename, password) {
 
 
   let hasPassword = !!password;
-  const switches =  ["a", "-v250000k", `${filename}.rar`, `${sourceFile}`]
+  size = size || 250000;
+  const switches =  ["a", `-v${size}k`, `${filename}.rar`, `${sourceFile}`]
 
   if ( hasPassword ) {
     switches.splice(1, 0, '-p');

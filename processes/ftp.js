@@ -19,13 +19,13 @@ async function start({CONFIG, args, data}) {
 
   Log.info('Login OK, try to upload files');
 
-  const {folder, rar} = data;
-  const files = [].concat(rar.rar, rar.rev);
+  const {folder, rar, rev} = data;
+  const files = [].concat(rar, rev);
 
-  Log.debug('found', files.length, 'files to upload');
+  Log.info('found', files.length, 'files to upload');
   Log.debug('files', folder, files);
 
-  // await FTP.uploadFiles(folder, files);
+  await FTP.uploadFiles(folder, files);
 
   Log.info('upload completed');
 

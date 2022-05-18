@@ -2,18 +2,20 @@ const FS = require('fs');
 const Path = require('path');
 const FTP = require('ftp');
 const Logger = require('../logger');
+const {bytesToSize} = require('../utils');
 
 const FtpClient = new FTP();
 
+FtpClient.on('error', (err) => {
+  Log.error('CONNECTION ERROR', err);
+});
 
 
 const Log = new Logger('FTPClient');
 
-
 function login({host, port, user, password}) {
   return new Promise((resolve, reject) => {
     FtpClient.once('error', (err) => {
-      Log.error('cannot connect', err);
       reject(err);
     });
 
@@ -27,19 +29,12 @@ function login({host, port, user, password}) {
       host,
       port,
       user,
-      password
+      password,
+      connTimeout: 5000,
+      pasvTimeout: 5000,
+      keepalive: 5000
     });
   });
-}
-
-
-async function creteFolder(name, year) {
-
-}
-
-
-async function moveToFolder(name) {
-
 }
 
 
@@ -57,12 +52,26 @@ async function uploadSingleFile(file) {
   return new Promise((resolve, reject) => {
     const destFilename = Path.basename(file);
     Log.info('uploading', file, 'as', destFilename);
-    FtpClient.put( FS.createReadStream(file), destFilename, (err) => {
+
+    let amount = 0;
+    let timer = setInterval(() => {
+      Log.debug('uploaded', destFilename, ':', bytesToSize(amount));
+    }, 7000);
+
+    const readStream = FS.createReadStream(file);
+    
+    readStream.on('data', (chunk) => {
+      amount += chunk.length;
+    });
+
+    FtpClient.put( readStream, destFilename, (err) => {
+      clearInterval(timer);
+
       if ( err ) {
         Log.error(err);
         return reject(err);
       }
-      Log.info(destFilename, 'uploaded!');
+      Log.info(destFilename, bytesToSize(amount), 'uploaded!');
       resolve();
     })
   });

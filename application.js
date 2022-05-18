@@ -57,9 +57,9 @@ const Argv = Yargs(process.argv.slice(2))
     describe: 'split videofile in .part*.rar'
   })
 
-  .option('k_rar', {
+  .option('rar_size', {
     type: 'number',
-    default: true,
+    default: 250000,
     describe: 'dimension of rar files in kilobytes'
   })
 

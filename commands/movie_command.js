@@ -105,13 +105,15 @@ async function start(argv) {
 
     if ( argv.ftp ) {
       p_rar = p_rar.then( (files) => {
-        return Ftp.exec(argv.fork,{
+        Log.info('rar job completed. Start FTP');
+        return Ftp.exec(false,{
           CONFIG: Config,
           args: argv,
           data: {
             title: metadata.title,
             year: metadata.year,
-    
+            rar: files.rar,
+            rev: files.rev,
             folder: tempMovieFolder,
             file: tempMovieFullPath,
             fileLit: filenameInLit
@@ -122,9 +124,9 @@ async function start(argv) {
         });
       })
     }
-    // steps.push(p_rar);
+  //   steps.push(p_rar);
   // } else {
-    // steps.push(Promise.resolve());
+  //   steps.push(Promise.resolve());
   }
 
 

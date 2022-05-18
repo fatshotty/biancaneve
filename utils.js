@@ -87,4 +87,12 @@ function exec_thread(fork, callback, filename, data) {
 }
 
 
-module.exports = {mkdir, stringToLIT, cleanString, exec_thread, convertSecToMinsHours};
+function bytesToSize(bytes) {
+  var sizes = ['b', 'kb', 'mb', 'gb', 'tb'];
+  if (bytes == 0) return '0 b';
+  var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+  return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+}
+
+
+module.exports = {mkdir, stringToLIT, cleanString, exec_thread, convertSecToMinsHours, bytesToSize};
