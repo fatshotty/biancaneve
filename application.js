@@ -45,10 +45,22 @@ const Argv = Yargs(process.argv.slice(2))
     describe: 'extract screenshots from video file'
   })
 
+  .option('n_screens', {
+    type: 'number',
+    default: 4,
+    describe: 'number of screenshots'
+  })
+
   .option('rar', {
     type: 'boolean',
     default: true,
     describe: 'split videofile in .part*.rar'
+  })
+
+  .option('k_rar', {
+    type: 'number',
+    default: true,
+    describe: 'dimension of rar files in kilobytes'
   })
 
   .option('rev', {
@@ -66,7 +78,7 @@ const Argv = Yargs(process.argv.slice(2))
   .option('ftp', {
     type: 'boolean',
     default: true,
-    describe: 'upload .partX.rar files on FTP server'
+    describe: 'upload .partX.rar and .rev files on FTP server'
   })
 
   .help('h')

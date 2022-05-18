@@ -10,6 +10,12 @@ const Logger = require('../logger');
 const Log = new Logger('FFProbe');
 
 
+async function extractMetadata(file) {
+  const probe = promisify(FFMPEG.ffprobe);
+  return await probe(file);
+}
+
+
 async function extractVideoData(file) {
   Log.info('start analyzing file with avinaptic');
 
@@ -50,36 +56,53 @@ async function extractVideoData(file) {
 }
 
 
-async function extractFanart(file) {
-  const folder = Path.dirname(file);
-  return new Promise( (resolve, reject) => {
+async function extractFanart(file, times) {
+  Log.info('start generating screenshots with ffmpeg');
 
-    let timer = setInterval(() => {
-      Log.info('extracting screenshots...');
-    }, 5000);
+  // ffmpeg -ss 00:06:18 -i test.mkv -frames:v 1 -q:v 2 output1.jpg
+  const res = [];
 
-    let screenfiles = [];
-    FFMPEG(file)
-      .on('filenames', function(filenames) {
-        Log.debug('Will generate ' + filenames.join(', '))
-        screenfiles = filenames.map(f => Path.join(folder, f));
-      })
-      .on('end', function() {
-        Log.info('Screenshots taken');
-        clearInterval(timer);
-        resolve(screenfiles);
-      })
-      .screenshots({
-        // Will take screens at percentage of video file
-        count: Config.NumberOfScreenshots,
-        folder: folder
-      }).on('error', function(err, stdout, stderr) {
-        Log.error(stdout, stderr);
-        clearInterval(timer);
-        reject(err);
-      });
-  })
+  for await ( let [i, time] of times.entries() ) {
+    const screen_name = `screen_${i + 1}.png`;
+    await execFFmpegFanart(file, time, screen_name);
+    res.push( screen_name );
+  }
+  return res;
 }
 
 
-module.exports = {extractVideoData, extractFanart};
+async function execFFmpegFanart(file, time, output) {
+  Log.info('exec ffmpeg for taking screenshot at', time);
+
+  const proc = ChildProcess.spawn("ffmpeg", ['-ss', time, '-i', file, '-frames:v', '1', '-q:v', '2', output], {cwd: Path.dirname(file)});
+
+  let timer = setInterval(() => {
+    Log.info('taking screenshot at', time);
+  }, 5000);
+
+  proc.stdout.on("data", data => {
+  });
+
+  proc.stderr.on("data", data => {
+    // Log.error(`FFMPEG: ${data}`);
+  });
+
+  proc.on('error', (error) => {
+    Log.error(`FFMPEG: ${error.message}`);
+  });
+
+  return new Promise( (resolve, reject) => {
+    proc.on("close", code => {
+      clearInterval(timer);
+      Log.info(`FFMPEG process exited with code ${code}`);
+      if ( code > 0 ) {
+        reject();
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
+
+module.exports = {extractMetadata, extractVideoData, extractFanart, execFFmpegFanart};

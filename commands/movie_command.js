@@ -145,7 +145,7 @@ async function start(argv) {
     // console.log( JSON.stringify(pugdata, null, 2) );
     const images = [];
     if ( pugdata.ffmpeg && pugdata.ffmpeg.screens ) {
-      images.push( pugdata.ffmpeg.screens.map( (s, i) => ({'name': `screenshot_${(i + 1)}`, path: Path.join(tempMovieFolder, i)} ) ) );
+      images.splice(0,0, ...pugdata.ffmpeg.screens.map( (s, i) => ({'name': `screenshot_${(i + 1)}`, path: Path.join(tempMovieFolder, s)} ) ) );
     }
 
     if ( pugdata.scraper && pugdata.scraper.tmdb && pugdata.scraper.tmdb.posterPath ) {

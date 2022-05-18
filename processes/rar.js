@@ -10,6 +10,8 @@ async function start({CONFIG, args, data}) {
 
   let pwd = args.password;
 
+  // args.k_rar
+
   const rarFiles = await execRar(data.file, Path.join(data.folder, data.fileLit), pwd);
 
   let revFiles = [];
