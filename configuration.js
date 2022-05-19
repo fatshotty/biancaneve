@@ -8,6 +8,7 @@ const Config = {
   MdbListKey: process.env.MDBLIST_KEY,
   TempDir: Path.resolve( process.env.TEMP_DIR || './temp'),
   NumberOfScreenshots: process.env.NUM_OF_SCREEN || 3,
+  ReleaserName: process.env.RELEASER_NAME,
   Ftp: {
     Host: process.env.FTP_SERVER,
     Port: process.env.FTP_PORT,

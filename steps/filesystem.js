@@ -10,6 +10,14 @@ const Log = new Logger('FileSystem');
 
 
 const FSCopy = promisify(FS.copyFile);
+const FSRename = promisify(FS.rename);
+
+const RES = [
+  {name: 'UHD 4k', w: 3840, h : 2160},
+  {name: 'FullHD 1080p', w: 1920, h : 1080},
+  {name:  'HD 720p', w: 1280, h : 720}
+];
+
 
 
 function getFileName(path) {
@@ -18,6 +26,75 @@ function getFileName(path) {
 
 function getDirName(path) {
   return Path.dirname(path);
+}
+
+
+function getResolution(video) {
+
+  const h = Math.max(video.height, video.coded_height);
+  const w = Math.max(video.width, video.coded_width);
+
+  for ( let res of RES) {
+    if ( w >= res.w || h >= res.h ) {
+      return res.name;
+    }
+  }
+
+  return `SD ${video.height}p`;
+
+}
+
+
+function generateNewFilenameMetadata(metadata, releaserName) {
+
+  const video = metadata.streams.find(s => s.codec_type == 'video');
+  const audios = metadata.streams.filter(s => s.codec_type == 'audio');
+
+  const langs = audios.map((a) => {
+    const comp = [];
+    if ( a.tags ) {
+      if ( a.tags.language ) {
+        comp.push( a.tags.language.toUpperCase() );
+      } else if ( a.tags.title ) {
+        const s = a.tags.title.split(',')[0];
+        if ( s ) {
+          comp.push( s.trim().toUpperCase() );
+        }
+      }
+    }
+    comp.push( (a.codec_name || '').toUpperCase() );
+
+    return comp.filter(Boolean).join('-');
+  }).join(' ');
+
+  const subs = metadata.streams.filter(s => s.codec_type.indexOf('subtitle') > -1 || s.codec_type.indexOf('text') > -1);
+
+  const lang_subs = [ ... (new Set(subs.map( (s) => {
+    if ( s.tags ) {
+      return (s.tags.language || '').toUpperCase()
+    }
+  }).filter(Boolean))  ) ].join(' ');
+
+  const name = [
+    getResolution(video),
+    video.codec_name.toUpperCase(),
+    langs,
+    lang_subs ? `Sub ${lang_subs}` : ''
+  ].filter(Boolean).join(' ');
+
+  // const extname = Path.extname(FILE);
+  // const filename = Path.basename(FILE, extname);
+
+  return `${name}${releaserName ? ' ' + releaserName : ''}`;
+
+
+}
+
+
+
+async function renameFile(from, to) {
+  Log.info('rename file', Path.basename(from), 'to', Path.basename(to));
+  await FSRename(from, to);
 }
 
 
@@ -185,4 +262,4 @@ async function listRarFiles(folder, pattern) {
 }
 
 
-module.exports = {downloadFile, extractTitleYearS, execRar, execRev};
+module.exports = {downloadFile, extractTitleYearS, execRar, execRev, generateNewFilenameMetadata, renameFile};

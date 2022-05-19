@@ -11,6 +11,7 @@ const Log = new Logger('FFProbe');
 
 
 async function extractMetadata(file) {
+  Log.info('extract metadata with ffprobe');
   const probe = promisify(FFMPEG.ffprobe);
   return await probe(file);
 }

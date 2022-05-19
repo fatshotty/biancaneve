@@ -11,6 +11,7 @@ const Rar = require('../processes/rar');
 const Ftp = require('../processes/ftp');
 const Pug = require('../processes/pug');
 const PixHost = require('../steps/pixhost');
+const {extractMetadata} = require('../steps/ffprobe');
 
 const Log = new Logger('moviecommand');
 
@@ -39,7 +40,7 @@ async function start(argv) {
   const tempMovieFolder = mkdir( Config.TempDir, foldername, !argv.download );
 
   const filename = `${foldername}${Path.extname(FILE)}`;
-  const tempMovieFullPath = Path.join(tempMovieFolder, filename);
+  let tempMovieFullPath = Path.join(tempMovieFolder, filename);
 
   const filenameInLit = stringToLIT(`${metadata.title} ${metadata.year}`);
   Log.debug('filename transformed is', filenameInLit);
@@ -48,6 +49,17 @@ async function start(argv) {
     Log.info('downloading file', FILE, 'in', tempMovieFullPath);
     await FileSystem.downloadFile(FILE, tempMovieFullPath);
   }
+
+  // get metadata
+  const videoMetadata = await extractMetadata(tempMovieFullPath);
+
+  Log.info('calculate new filename');
+  const newfilenameMetadata = FileSystem.generateNewFilenameMetadata(videoMetadata, Config.ReleaserName);
+  const newfilename = `${foldername} - ${newfilenameMetadata}${Path.extname(FILE)}`;
+
+
+  await FileSystem.renameFile( tempMovieFullPath, Path.join(tempMovieFolder, newfilename)  )
+  tempMovieFullPath = Path.join(tempMovieFolder, newfilename);
 
 
   const steps = [Promise.resolve()];
