@@ -9,6 +9,7 @@ const Config = {
   TempDir: Path.resolve( process.env.TEMP_DIR || './temp'),
   NumberOfScreenshots: process.env.NUM_OF_SCREEN || 3,
   ReleaserName: process.env.RELEASER_NAME,
+  TemplatesPath: process.env.TEMPLATES_PATH,
   Ftp: {
     Host: process.env.FTP_SERVER,
     Port: process.env.FTP_PORT,

@@ -137,7 +137,7 @@ async function execRar(sourceFile, filename, password, size) {
   const folder = Path.dirname(sourceFile);
 
 
-  const filesToDelete = await listRarFiles(folder, '*.rar');
+  const filesToDelete = await listAllFiles(folder, '*.rar');
   if ( filesToDelete.length ) {
     Log.info('deleting previous generated rar files:', filesToDelete);
   }
@@ -192,7 +192,7 @@ async function execRar(sourceFile, filename, password, size) {
       if ( code > 0 ) {
         reject();
       } else {
-        const files = listRarFiles(folder, '*.part*.rar');
+        const files = listAllFiles(folder, '*.part*.rar');
         return resolve(files);
       }
     });
@@ -206,7 +206,7 @@ async function execRev(sourceFile) {
   const folder = Path.dirname(sourceFile);
 
 
-  const filesToDelete = await listRarFiles(folder, '*.rev');
+  const filesToDelete = await listAllFiles(folder, '*.rev');
   if ( filesToDelete.length ) {
     Log.info('deleting previous generated rev files:', filesToDelete);
   }
@@ -244,7 +244,7 @@ async function execRev(sourceFile) {
       if ( code > 0 ) {
         reject();
       } else {
-        const files = listRarFiles(folder, '*.part*.rev');
+        const files = listAllFiles(folder, '*.part*.rev');
         return resolve(files);
       }
     });
@@ -253,7 +253,7 @@ async function execRev(sourceFile) {
 }
 
 
-async function listRarFiles(folder, pattern) {
+async function listAllFiles(folder, pattern) {
   const files = Glob.sync(pattern, {
     nodir: true,
     cwd: folder
@@ -262,4 +262,4 @@ async function listRarFiles(folder, pattern) {
 }
 
 
-module.exports = {downloadFile, extractTitleYearS, execRar, execRev, generateNewFilenameMetadata, renameFile};
+module.exports = {downloadFile, extractTitleYearS, execRar, execRev, generateNewFilenameMetadata, renameFile, listAllFiles};

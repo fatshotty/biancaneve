@@ -1,0 +1,12 @@
+span #{mediafilename}
+
+- if ( images && images.urls && images.urls.poster ) {
+  img.fr-fic.fr-dib(src=images.urls.poster style='width: 360px;')
+- }
+
+br
+br
+- if ( scraper && scraper.tmdb ) {
+  | #{scraper.tmdb.overview}
+- }
+

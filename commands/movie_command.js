@@ -64,18 +64,25 @@ async function start(argv) {
 
   const steps = [Promise.resolve()];
 
+
+  const DATA = {
+    TYPE: 'movie',
+    title: metadata.title,
+    year: metadata.year,
+
+    mediafilename: newfilename,
+
+    folder: tempMovieFolder,
+    file: tempMovieFullPath,
+    fileLit: filenameInLit
+  };
+
+
   if ( argv.scraper ) {
     const p_scraper = Scraper.exec(argv.fork,{
       CONFIG: Config,
       args: argv,
-      data: {
-        title: metadata.title,
-        year: metadata.year,
-
-        folder: tempMovieFolder,
-        file: tempMovieFullPath,
-        fileLit: filenameInLit
-      }
+      data: DATA
     });
     steps.push(p_scraper);
   } else {
@@ -86,14 +93,7 @@ async function start(argv) {
     const p_ffmpeg = FFMpeg.exec(argv.fork,{
       CONFIG: Config,
       args: argv,
-      data: {
-        title: metadata.title,
-        year: metadata.year,
-
-        folder: tempMovieFolder,
-        file: tempMovieFullPath,
-        fileLit: filenameInLit
-      }
+      data: DATA
     });
     steps.push(p_ffmpeg)
   } else {
@@ -105,14 +105,7 @@ async function start(argv) {
     let p_rar = Rar.exec(argv.fork,{
       CONFIG: Config,
       args: argv,
-      data: {
-        title: metadata.title,
-        year: metadata.year,
-
-        folder: tempMovieFolder,
-        file: tempMovieFullPath,
-        fileLit: filenameInLit
-      }
+      data: DATA
     });
 
     if ( argv.ftp ) {
@@ -121,15 +114,7 @@ async function start(argv) {
         return Ftp.exec(false,{
           CONFIG: Config,
           args: argv,
-          data: {
-            title: metadata.title,
-            year: metadata.year,
-            rar: files.rar,
-            rev: files.rev,
-            folder: tempMovieFolder,
-            file: tempMovieFullPath,
-            fileLit: filenameInLit
-          }
+          data: {...DATA, rar: files.rar, rev: files.rev}
         }).then( () => {
           Log.debug('ftp completed!')
           return files;
@@ -181,26 +166,18 @@ async function start(argv) {
     let p_pug = Pug.exec(false,{
       CONFIG: Config,
       args: argv,
-      data: {
-        title: metadata.title,
-        year: metadata.year,
-
-        folder: tempMovieFolder,
-        file: tempMovieFullPath,
-        fileLit: filenameInLit,
-        ...pugdata
-      }
+      data: { ...DATA, ...pugdata}
     });
 
-    p_pug.finally( () => {
-      // console.log('');
-      // console.log( JSON.stringify({
-      //   scraper: pugdata.scraper,
-      //   images: pugdata.images
-      // }, null, 2) );
-      FS.writeFileSync( Path.join(tempMovieFolder, 'file-report.json'), JSON.stringify(pugdata, null, 2), {encoding: 'utf-8'} )
-      Log.info('completed'); 
+    p_pug.then( () => {
+      Log.info('process completed');
+    }).catch((e) => {
+      Log.error('Error occurred', e);
     })
+    .finally( () => {
+      FS.writeFileSync( Path.join(tempMovieFolder, 'file-report.json'), JSON.stringify(pugdata, null, 2), {encoding: 'utf-8'} )
+      Log.info('report saved');
+    });
 
 
   })
